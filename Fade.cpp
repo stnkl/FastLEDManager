@@ -41,24 +41,29 @@ void handleFade()
   else if (Config.sunsetEnabled && now->tm_hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
   {
     // Only start sunset if all leds are off
-    if (brightness10 == 0)
+    if (brightness8 == 0)
     {
       startFade(SUNSET);
     }
-    else // brightness10 > 0
+    else // brightness8 > 0
     {
-      bool ledsIlluminated = false;
-      for (uint16_t i = 0; i < NUM_LEDS; i++)
+      for (uint16_t x = 0; x < 4; x++)
       {
-        if (brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
+        for (uint16_t y = 0; y < 4; y++)
         {
-          ledsIlluminated = true;
-          break;
+          for (uint16_t z = 0; z < 4; z++)
+          {
+            if (gamma_corrected_rgb_data[x][y][z].red == 0 &&
+                gamma_corrected_rgb_data[x][y][z].green == 0 &&
+                gamma_corrected_rgb_data[x][y][z].blue == 0)
+            {
+              return;
+            }
+          }
         }
       }
 
-      if (!ledsIlluminated)
-        startFade(SUNSET);
+      startFade(SUNSET);
     }
   }
 }
@@ -84,7 +89,7 @@ void startFade(FadeMode fadeMode)
   else if (fadeMode == SUNSET)
   {
     getAnimation(Config.sunsetAnimation)->begin();
-    sunsetMaximumBrightness = brightness10;
+    sunsetMaximumBrightness = brightness8;
     fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, fadeTick);
     Serial.println("[Fade] Start fade 'Sunset'");
   }
@@ -101,7 +106,7 @@ void fadeTick()
   if (status == PAUSED)
     return;
 
-  if (currentFade == ALARM && fadeBrightness == 1023)
+  if (currentFade == ALARM && fadeBrightness == 255)
   {
     if (Config.postAlarmAnimation != Config.alarmAnimation)
       getAnimation(Config.postAlarmAnimation)->begin();
@@ -115,7 +120,7 @@ void fadeTick()
   }
   else
   {
-    if (fadeBrightness < 1023)
+    if (fadeBrightness < 255)
       fadeBrightness++;
     else
       fadeTicker.detach();
@@ -123,7 +128,7 @@ void fadeTick()
     Serial.println("[Fade] Fade brightness: " + String(fadeBrightness));
   }
 
-  brightness10 = fadeBrightness;
+  brightness8 = fadeBrightness;
 }
 
 float rad(float deg)

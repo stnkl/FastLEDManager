@@ -124,24 +124,10 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
     liveDataHasChanged = true;
     webSocket.sendTXT(num, String("ok").c_str());
     break;
-  case 4: // Spectroscope data
-    if (currentAnimation)
-      currentAnimation->stop();
-    for (uint16_t i = 0; i < NUM_LEDS; i++)
-    {
-      leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
-    }
-    break;
   case 5: // Saturation
     Config.saturation = binary[1];
     liveDataHasChanged = true;
     webSocket.sendTXT(num, String("ok").c_str());
-    break;
-  case 6: // linearSpectroscope data
-    linearSpectroscope(binary + 1);
-    break;
-  case 7: // symmetricalSpectroscope data
-    symmetricalSpectroscope(binary + 1);
     break;
   }
 }

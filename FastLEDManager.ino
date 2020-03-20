@@ -9,13 +9,7 @@
 #include "Webserver.h"
 
 // Include animations here:
-#include "Animations/rainbow.h"
 #include "Animations/color.h"
-#include "Animations/colorBlend.h"
-#include "Animations/fader.h"
-#include "Animations/colorRider.h"
-#include "Animations/rbWave.h"
-#include "Animations/rgbWave.h"
 
 void setup()
 {
@@ -32,12 +26,6 @@ void setup()
 
   // Register animations here:
   registerAnimation(new Color("Color"));
-  registerAnimation(new ColorBlend("Color Blend"));
-  registerAnimation(new ColorRider("Color Rider"));
-  registerAnimation(new Fader("Fader"));
-  registerAnimation(new Rainbow("Rainbow"));
-  registerAnimation(new RbWave("RB Wave"));
-  registerAnimation(new RgbWave("RGB Wave"));
 
   if (Config.startupAnimation != "")
     getAnimation(Config.startupAnimation)->begin();
